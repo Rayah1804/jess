@@ -702,28 +702,7 @@ function Home() {
                                         </svg>
                                         Excel
                                     </button>
-                                    <button
-                                        onClick={exportToPDF}
-                                        style={{
-                                            display: 'flex',
-                                            alignItems: 'center',
-                                            gap: '8px',
-                                            backgroundColor: '#FF7675',
-                                            color: 'white',
-                                            border: 'none',
-                                            padding: '0.75rem 1.5rem',
-                                            borderRadius: '6px',
-                                            cursor: 'pointer',
-                                            fontSize: '1rem',
-                                            transition: 'all 0.3s ease',
-                                            boxShadow: '0 2px 4px rgba(255, 118, 117, 0.2)'
-                                        }}
-                                    >
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
-                                            <path d="M14 14V4.5L9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2zM9.5 3A1.5 1.5 0 0 0 11 4.5h2V14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h5.5v2z"/>
-                                        </svg>
-                                        PDF
-                                    </button>
+                                    
                                 </div>
 
                                 {/* Bouton de déconnexion à droite */}
