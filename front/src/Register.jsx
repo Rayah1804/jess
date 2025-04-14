@@ -36,6 +36,10 @@ const Register = () => {
                 username: formData.username,
                 password: formData.password,
                 email: formData.email
+            }, {
+                headers: {
+                    'Content-Type': 'application/json'
+                }
             });
 
             alert('Inscription réussie ! Vous pouvez maintenant vous connecter.');

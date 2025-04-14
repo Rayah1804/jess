@@ -285,7 +285,8 @@ const Login = () => {
                                 display: 'flex',
                                 justifyContent: 'center',
                                 alignItems: 'center',
-                                gap: '0.5rem'
+                                gap: '0.8rem',
+                                marginBottom: '2rem'
                             }}
                         >
                             {isLoading ? (
@@ -299,6 +300,22 @@ const Login = () => {
                                 'Se connecter'
                             )}
                         </button>
+
+                        <p style={{
+                            textAlign: 'center',
+                            color: '#666'
+                        }}>
+                            Pas encore de compte ?{' '}
+                            <a
+                                href="/register"
+                                style={{
+                                    color: '#0061f2',
+                                    textDecoration: 'none'
+                                }}
+                            >
+                                Créez-en un
+                            </a>
+                        </p>
                     </form>
                 </div>
             </div>

@@ -6,99 +6,55 @@ import jwt from 'jsonwebtoken';
 
 const app = express();
 
-// Configuration CORS plus permissive pour le développement
-app.use(cors({
-    origin: ['http://localhost:3000', 'http://localhost:3001'],
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept'],
-    credentials: true,
-    optionsSuccessStatus: 200
-}));
-
-app.use(express.json());
-
-// Middleware pour ajouter les headers CORS manuellement
-app.use((req, res, next) => {
-    res.header('Access-Control-Allow-Origin', 'http://localhost:3000');
-    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-    res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With, Accept');
-    res.header('Access-Control-Allow-Credentials', 'true');
-    
-    // Handle preflight
-    if (req.method === 'OPTIONS') {
-        return res.sendStatus(200);
-    }
-    next();
-});
-
-// Configuration de la connexion MySQL
+// Configuration de la base de données MySQL
 const dbConfig = {
-    host: "localhost",
-    user: "root",
-    password: "",
-    database: "hotel"
+    host: 'localhost',
+    user: 'root',
+    password: '',
+    database: 'hotel'
 };
 
-let db;
+// Création de la connexion MySQL
+const db = mysql.createConnection(dbConfig);
 
-// Création de la connexion avec gestion de la reconnexion
-function handleDisconnect() {
-    console.log('Tentative de connexion à MySQL...');
-    
-    db = mysql.createConnection(dbConfig);
-
-    db.connect(err => {
+// Connexion à la base de données
+db.connect((err) => {
     if (err) {
-            console.error("❌ Erreur de connexion à MySQL:", err);
-            console.error("Code:", err.code);
-            console.error("Message:", err.message);
-            setTimeout(handleDisconnect, 2000);
-    } else {
-        console.log("✅ Connexion réussie à MySQL !");
-            
-            // Créer la table users si elle n'existe pas
-            const createUsersTable = `
-                CREATE TABLE IF NOT EXISTS users (
-                    id INT AUTO_INCREMENT PRIMARY KEY,
-                    username VARCHAR(50) NOT NULL UNIQUE,
-                    password VARCHAR(255) NOT NULL,
-                    email VARCHAR(100) NOT NULL UNIQUE,
-                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-                )
-            `;
-            
-            db.query(createUsersTable, (err) => {
-                if (err) {
-                    console.error("❌ Erreur lors de la création de la table users:", err);
-                } else {
-                    console.log("✅ Table users vérifiée/créée avec succès");
-                }
-            });
+        console.error('Erreur de connexion à MySQL:', err);
+        return;
+    }
+    console.log('Connecté à MySQL');
 
-            // Tester la connexion
-            db.query('SELECT 1', (err, result) => {
-                if (err) {
-                    console.error("❌ Erreur lors du test de connexion:", err);
-                } else {
-                    console.log("✅ Test de connexion réussi");
-                }
-            });
+    // Créer la table users si elle n'existe pas
+    const createUsersTable = `
+        CREATE TABLE IF NOT EXISTS users (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            username VARCHAR(50) NOT NULL UNIQUE,
+            password VARCHAR(255) NOT NULL,
+            email VARCHAR(100) NOT NULL UNIQUE,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        )
+    `;
+
+    db.query(createUsersTable, (err) => {
+        if (err) {
+            console.error('Erreur lors de la création de la table users:', err);
+            return;
         }
+        console.log('Table users vérifiée/créée avec succès');
     });
+});
 
-    db.on('error', function(err) {
-        console.error('Erreur MySQL:', err);
-        if (err.code === 'PROTOCOL_CONNECTION_LOST') {
-            console.log('Connexion perdue, tentative de reconnexion...');
-            handleDisconnect();
-        } else {
-            console.error('Erreur fatale MySQL:', err);
-            throw err;
-        }
-    });
-}
+// Configuration CORS simplifiée
+app.use(cors({
+    origin: true, // Permet toutes les origines en développement
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'Accept', 'X-Requested-With']
+}));
 
-handleDisconnect();
+// Middleware pour parser le JSON
+app.use(express.json());
 
 // Middleware pour logger les requêtes
 app.use((req, res, next) => {
