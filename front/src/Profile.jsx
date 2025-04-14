@@ -13,6 +13,7 @@ const Profile = () => {
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
     const [isLoading, setIsLoading] = useState(false);
+    const [showLogoutModal, setShowLogoutModal] = useState(false);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -82,6 +83,16 @@ const Profile = () => {
         } finally {
             setIsLoading(false);
         }
+    };
+
+    const handleLogout = () => {
+        setShowLogoutModal(true);
+    };
+
+    const confirmLogout = () => {
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+        navigate('/login');
     };
 
     return (
@@ -184,11 +195,7 @@ const Profile = () => {
                         </button>
 
                         <button
-                            onClick={() => {
-                                localStorage.removeItem('token');
-                                localStorage.removeItem('user');
-                                navigate('/login');
-                            }}
+                            onClick={handleLogout}
                             style={{
                                 backgroundColor: '#dc3545',
                                 color: 'white',
@@ -454,6 +461,83 @@ const Profile = () => {
                     </form>
                 </div>
             </div>
+
+            {/* Modal de confirmation de déconnexion */}
+            {showLogoutModal && (
+                <div style={{
+                    position: 'fixed',
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+                    backdropFilter: 'blur(5px)',
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    zIndex: 1000
+                }}>
+                    <div style={{
+                        backgroundColor: 'white',
+                        padding: '2rem',
+                        borderRadius: '12px',
+                        boxShadow: '0 4px 20px rgba(0, 0, 0, 0.15)',
+                        width: '90%',
+                        maxWidth: '400px',
+                        textAlign: 'center'
+                    }}>
+                        <h2 style={{
+                            color: '#2c3e50',
+                            marginBottom: '1rem',
+                            fontSize: '1.5rem'
+                        }}>
+                            Confirmer la déconnexion
+                        </h2>
+                        <p style={{
+                            color: '#666',
+                            marginBottom: '1.5rem'
+                        }}>
+                            Êtes-vous sûr de vouloir vous déconnecter ?
+                        </p>
+                        <div style={{
+                            display: 'flex',
+                            justifyContent: 'center',
+                            gap: '1rem'
+                        }}>
+                            <button
+                                onClick={() => setShowLogoutModal(false)}
+                                style={{
+                                    padding: '0.75rem 1.5rem',
+                                    border: '1px solid #ddd',
+                                    borderRadius: '6px',
+                                    backgroundColor: 'white',
+                                    color: '#666',
+                                    cursor: 'pointer',
+                                    fontSize: '0.9rem',
+                                    transition: 'all 0.3s ease'
+                                }}
+                            >
+                                Annuler
+                            </button>
+                            <button
+                                onClick={confirmLogout}
+                                style={{
+                                    padding: '0.75rem 1.5rem',
+                                    border: 'none',
+                                    borderRadius: '6px',
+                                    backgroundColor: '#FF7675',
+                                    color: 'white',
+                                    cursor: 'pointer',
+                                    fontSize: '0.9rem',
+                                    transition: 'all 0.3s ease'
+                                }}
+                            >
+                                Se déconnecter
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };
